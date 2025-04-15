@@ -5,9 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: AhuanProductsPanel
-    restart: unless-stopped
-    volumes:
-      - ./dist:/var/www/html
+    container_name: ahuan-vue
     ports:
       - '3015:80'
+    restart: unless-stopped
