@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  vue-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: AhuanProductsPanel
+    restart: unless-stopped
+    volumes:
+      - ./dist:/var/www/html
+    ports:
+      - '3015:80'
