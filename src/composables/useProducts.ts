@@ -21,15 +21,17 @@ export function useProducts() {
       cat: 'test',
     });
     if (res) {
-      products.value = res.map((item: any) => ({
-        id: item.Id,
-        title: item.Title,
-        description: item.Description,
-        price: item.Price,
-        category: item.Category,
-        image: item.Image,
-        C_OR_R: item.C_OR_R,
-      }));
+      if (Array.isArray(res)) {
+        products.value = res.map((item: any) => ({
+          id: item.Id,
+          title: item.Title,
+          description: item.Description,
+          price: item.Price,
+          category: item.Category,
+          image: item.Image,
+          C_OR_R: item.C_OR_R,
+        }));
+      }
     }
   };
 
