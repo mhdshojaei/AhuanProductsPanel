@@ -21,11 +21,13 @@
 </script>
 
 <template>
-  <ProductTable
-    @edit="editProduct"
-    @create="createProduct" />
-  <ProductForm
-    v-model="dialog"
-    :item="selected"
-    @submitted="fetchProducts" />
+  <div class="container mx-auto p-4 pt-10">
+    <ProductTable
+      @edit="editProduct"
+      @create="createProduct" />
+    <ProductForm
+      v-model="dialog"
+      :item="selected"
+      @submitted="fetchProducts" />
+  </div>
 </template>

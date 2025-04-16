@@ -16,7 +16,7 @@
   const headers = [
     { title: 'عنوان', key: 'title' },
     { title: 'توضیحات', key: 'description' },
-    { title: 'قیمت', key: 'price' },
+    { title: 'قیمت (تومان)', key: 'price' },
     { title: 'دسته‌بندی', key: 'category' },
     { title: 'تصویر', key: 'image' },
     { title: 'عملیات', key: 'actions', sortable: false },
@@ -44,6 +44,7 @@
   };
 
   const createProduct = () => {
+    console.log('hi');
     selectedProduct.value = null;
     showForm.value = true;
   };
@@ -52,13 +53,15 @@
     selectedProduct.value = item;
     showForm.value = true;
   };
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('fa-IR').format(price);
+  };
 
   onMounted(fetchProducts);
 </script>
 
 <template>
   <v-container>
-    <!-- دیالوگ تأیید حذف -->
     <v-dialog
       v-model="confirmDeleteDialog"
       max-width="400">
@@ -82,21 +85,31 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <div class="flex justify-end mb-3">
+      <v-btn
+        class="!text-xs !rounded-lg"
+        color="primary "
+        @click="createProduct">
+        <v-icon
+          start
+          icon="mdi-plus" />
+        افزودن محصول جدید
+      </v-btn>
+    </div>
 
-    <!-- لودینگ -->
     <v-progress-linear
       v-if="loading"
       indeterminate
       color="primary"
       class="mb-4" />
 
-    <!-- جدول -->
     <v-data-table
       :headers="headers"
       :items="products"
       :search="search"
+      hide-default-footer
       item-value="id"
-      class="elevation-1">
+      class="shadow-md !rounded-2xl">
       <template #top>
         <div class="d-flex justify-space-between align-center mb-4">
           <v-text-field
@@ -105,25 +118,16 @@
             append-inner-icon="mdi-magnify"
             hide-details
             class="w-75" />
-          <v-btn
-            color="primary"
-            @click="createProduct">
-            <v-icon
-              start
-              icon="mdi-plus" />
-            افزودن محصول جدید
-          </v-btn>
         </div>
+      </template>
+      <template #item.price="{ item }">
+        {{ formatPrice(item.price) }}
       </template>
 
       <template #[`item.actions`]="{ item }">
         <v-menu>
           <template #activator="{ props }">
-            <v-btn
-              icon
-              v-bind="props">
-              <v-icon>mdi-dots-horizontal</v-icon>
-            </v-btn>
+            <v-icon v-bind="props">mdi-dots-horizontal</v-icon>
           </template>
 
           <v-list>
@@ -131,9 +135,10 @@
               <v-list-item-title>
                 <v-icon
                   start
+                  size="16"
                   icon="mdi-pencil"
-                  class="me-2" />
-                ویرایش
+                  class="me-1" />
+                <span class="text-xs"> ویرایش </span>
               </v-list-item-title>
             </v-list-item>
 
@@ -141,17 +146,22 @@
               <v-list-item-title>
                 <v-icon
                   start
+                  size="16"
                   icon="mdi-delete"
-                  class="me-2" />
-                حذف
+                  class="me-1" />
+                <span class="text-xs">حذف</span>
               </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
       </template>
+      <template #no-data>
+        <div class="text-center py-4 text-gray-500">
+          محصولی برای نمایش وجود ندارد.
+        </div>
+      </template>
     </v-data-table>
 
-    <!-- فرم ساخت/ویرایش -->
     <ProductForm
       v-model="showForm"
       :item="selectedProduct"

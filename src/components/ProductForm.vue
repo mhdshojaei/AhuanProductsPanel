@@ -25,6 +25,44 @@
     maxImage: (v: string) => v.length <= 50 || 'حداکثر ۵۰ کاراکتر مجاز است',
   };
 
+  const rawPriceInput = ref('');
+
+  watch(
+    () => form.price,
+    (val) => {
+      rawPriceInput.value = val ? String(val) : '';
+    },
+  );
+
+  const handlePriceInput = (value: string) => {
+    if (!/^\d*$/.test(value)) return;
+
+    rawPriceInput.value = value;
+    form.price = parseInt(value) || 0;
+  };
+
+  const formatPriceOnBlur = () => {
+    if (form.price) {
+      rawPriceInput.value = new Intl.NumberFormat('fa-IR').format(form.price);
+    }
+  };
+  const onlyAllowDigits = (e: KeyboardEvent) => {
+    const allowedKeys = [
+      'Backspace',
+      'ArrowLeft',
+      'ArrowRight',
+      'Delete',
+      'Tab',
+    ];
+    if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const showRawPriceOnFocus = () => {
+    rawPriceInput.value = String(form.price || '');
+  };
+
   watch(
     () => props.modelValue,
     (val) => {
@@ -51,8 +89,8 @@
   };
 
   const handleSubmit = async () => {
-    if (!(await formRef.value.validate())) return;
-
+    const { valid } = await formRef.value.validate();
+    if (!valid) return;
     const payload = {
       ...form,
       C_OR_R: 'T',
@@ -80,6 +118,7 @@
 <template>
   <v-dialog
     v-model="dialog"
+    @update:modelValue="(val) => emit('update:modelValue', val)"
     max-width="600">
     <v-card>
       <v-card-title class="text-h6">
@@ -99,26 +138,38 @@
             label="توضیحات"
             :rules="[rules.required]" />
           <v-text-field
-            v-model="form.price"
+            :model-value="rawPriceInput"
+            @update:model-value="handlePriceInput"
+            @keypress="onlyAllowDigits"
+            @blur="formatPriceOnBlur"
+            @focus="showRawPriceOnFocus"
             label="قیمت"
-            type="number"
-            :rules="[rules.required]" />
+            suffix="تومان"
+            type="text"
+            :rules="[rules.required]"
+            dir="rtl" />
+
           <v-text-field
             v-model="form.image"
             label="آدرس تصویر"
             :rules="[rules.required, rules.maxImage]" />
         </v-form>
       </v-card-text>
-
       <v-card-actions>
         <v-spacer />
+
         <v-btn
-          text
-          @click="close"
-          >بستن</v-btn
-        >
+          class="!rounded-lg"
+          color="error"
+          variant="elevated"
+          @click="close">
+          بستن
+        </v-btn>
+
         <v-btn
+          class="!rounded-lg"
           color="primary"
+          variant="flat"
           @click="handleSubmit">
           {{ isEdit ? 'ویرایش' : 'ثبت' }}
         </v-btn>

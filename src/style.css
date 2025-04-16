@@ -23,7 +23,9 @@ body {
   letter-spacing: normal !important;
   direction: rtl;
 }
-
+.v-card-title {
+  font-family: 'YekanBakh', sans-serif !important;
+}
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -38,7 +40,42 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.v-application {
+  background-color: #f2f2f2 !important;
+}
+.v-list-item--density-default.v-list-item--one-line {
+  min-height: 40px !important;
+}
+.v-card {
+  border-radius: 20px !important;
+  padding: 20px !important;
+}
+.v-menu > .v-overlay__content > .v-list {
+  border-radius: 15px !important;
+}
+.v-input__control {
+  background: white !important;
+  border-radius: 10px !important;
 
+  border: 0px solid #5a5a5a;
+}
+.v-field {
+  border-radius: 10px !important;
+}
+.v-field__overlay {
+  background-color: white !important;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
 @media (prefers-color-scheme: light) {
   :root {
     background-color: #ffffff;
